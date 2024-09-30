@@ -5,6 +5,7 @@ import { ethers } from "ethers";
 import NFT_ABI from '../abis/NFT.json';
 import Image from "next/image";
 
+// Replace with your deployed contract address on Ganache
 const NFT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 export default function Home() {
@@ -15,18 +16,19 @@ export default function Home() {
   // Function to handle minting
   const mintNFT = async () => {
     try {
-      // Connect to the local Hardhat network
-      const provider = new ethers.JsonRpcProvider("http://localhost:8545");
-      const signer = await provider.getSigner(0); // Use the first account provided by Hardhat
+      // Connect to Ganache local blockchain
+      const provider = new ethers.JsonRpcProvider("http://localhost:8547"); // Adjust if using a different port
+      const signer = await provider.getSigner(); // Use the signer from the first account of Ganache (or MetaMask account)
+
       const nftContract = new ethers.Contract(NFT_ADDRESS, NFT_ABI.abi, signer);
 
       // Call the mint function from your NFT contract
-      const transaction = await nftContract.mintNFT(recipient); // Ensure you're passing tokenURI if required
+      const transaction = await nftContract.mintNFT(recipient);
       await transaction.wait();
       
       setMessage("NFT minted successfully!");
     } catch (error) {
-      console.error(error);
+      console.error("Error:", error);
       setMessage("Error minting NFT. Please check the console for details.");
     }
   };
